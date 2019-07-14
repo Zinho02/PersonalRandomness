@@ -8,3 +8,5 @@ Personal random things that may be interesting.
 This project is a series of cryptography algorithms implementations. Feel free to take a look.
 ### Shift Cipher
 An implementation of a Shift Cipher algorithm for ASCII characteres.
+### Substitution Cipher
+An implementation of a Substitution Cipher algorithm for ASCII characteres.
