@@ -1,42 +1,34 @@
 public class ShiftCipher {
-    private int modulo, key;
+    private final short NUM_CHARS = 256;
+    private short key;
 
-    public ShiftCipher(int modulo, int key) {
-        if (key < 0 || key >= modulo) {
-            throw new RuntimeException("Choose a key in the interval [0 ; modulo)");
+    public ShiftCipher(short key) {
+        if (key < 0 || key >= NUM_CHARS) {
+            throw new RuntimeException("Choose a key in the interval [0 ; 256)");
         }
         this.setKey(key);
-        this.setModulo(modulo);
     }
 
-    public void setKey(int key) {
+    public void setKey(short key) {
         this.key = key;
     }
 
-    public int getKey() {
+    public short getKey() {
         return key;
     }
 
-    public void setModulo(int modulo) {
-        this.modulo = modulo;
-    }
-
-    public int getModulo() {
-        return modulo;
-    }
-
-    public long[] encrypt(String data) {
-        long[] dataEncrypted = new long[data.length()];
+    public short[] encrypt(String data) {
+        short[] dataEncrypted = new short[data.length()];
         for (int i = 0; i < data.length(); i++) {
-            dataEncrypted[i] = (long) ((data.charAt(i) + key) % modulo);
+            dataEncrypted[i] = (short) ((data.charAt(i) + key) % NUM_CHARS);
         }
         return dataEncrypted;
     }
 
-    public String decrypt(long[] data) {
+    public String decrypt(short[] data) {
         String dataDecrypted = "";
         for (int i = 0; i < data.length; i++) {
-            dataDecrypted += (char) ((data[i] - key) % modulo);
+            dataDecrypted += (short) ((data[i] - key) % NUM_CHARS);
         }
         return dataDecrypted;
     }
