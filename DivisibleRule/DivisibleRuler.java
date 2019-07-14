@@ -21,11 +21,11 @@ public class DivisibleRuler {
     }
 
     public static void main(String[] args) {
-        DivisibleRuler divisibleRule = new DivisibleRuler();
+        DivisibleRuler divisibleRuler = new DivisibleRuler();
         Scanner input = new Scanner(System.in);
         System.out.println("Type the number to get the divisible rule.");
         int n = input.nextInt();
-        System.out.println("The divisible rule is:\n" + divisibleRule.divisibleRuleBaseTen(n));
+        System.out.println("The divisible rule is:\n" + divisibleRuler.divisibleRuleBaseTen(n));
         input.close();
     }
 }
