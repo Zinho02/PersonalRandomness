@@ -7,7 +7,6 @@ public class SubstitutionCipher implements SymmetricCipher<Integer[]> {
         this.key = generateKey();
     }
 
-    // Not yet done.
     @Override
     public Integer[] generateKey() {
         Random generator = new Random();
@@ -16,17 +15,12 @@ public class SubstitutionCipher implements SymmetricCipher<Integer[]> {
         Integer[] reverseMap = new Integer[NUM_CHARS];
         initializeIntVector(reverseMap, -1);
         for (int i = 0; i < NUM_CHARS; i++) {
-            int counter = 0;
-            int to = generator.nextInt(NUM_CHARS - i);
-            for (Integer value : reverseMap) {
-                if (value != -1) {
-                    if (to < value) {
-                        counter++;
-                    }
-                }
+            int to = generator.nextInt(NUM_CHARS);
+            if (reverseMap[to] != -1) {
+                to = nearest(reverseMap, to);
             }
-            map[i] = to + counter;
-            reverseMap[to+counter] = i;
+            map[i] = to;
+            reverseMap[to] = i;
         }
         this.key = map;
         this.reverseMap = reverseMap;
@@ -46,7 +40,7 @@ public class SubstitutionCipher implements SymmetricCipher<Integer[]> {
     public String decrypt(int[] data) {
         String dataDecrypted = "";
         for (int i = 0; i < data.length; i++) {
-            dataDecrypted += (int) this.reverseMap[data[i]];
+            dataDecrypted += (char) ((int) this.reverseMap[data[i]]);
         }
         return dataDecrypted;
     }
@@ -57,23 +51,19 @@ public class SubstitutionCipher implements SymmetricCipher<Integer[]> {
         }
     }
 
-    public String toString(Integer[] vector) {
-        String begin = "[" + vector[0];
-        String mid = "";
-        for (int i = 1; i < vector.length; i++) {
-            mid += ", " + vector[i];
+    public int nearest(Integer[] vector, int index) {
+        for (int i = 1; i <= vector.length; i++) {
+            if (index + i < vector.length) {
+                if (vector[index + i] == -1) {
+                    return index + i;
+                }
+            }
+            if (index - i >= 0) {
+                if (vector[index - i] == -1) {
+                    return index - i;
+                }
+            }
         }
-        return begin + mid + "]";
-    }
-
-    public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        SubstitutionCipher substitutionCipher = new SubstitutionCipher();
-        System.out.println(substitutionCipher.toString(substitutionCipher.key));
-        System.out.println("\n\n"+substitutionCipher.toString(substitutionCipher.reverseMap));
-        //System.out.println("Type your message:");
-        //String message = input.next();
-        //int[] encryptedData = substitutionCipher.encrypt(message);
-        //System.out.println("This is your original message:\n" + substitutionCipher.decrypt(encryptedData));
+        return -1;
     }
 }
