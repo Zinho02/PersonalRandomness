@@ -7,7 +7,6 @@ public class SubstitutionCipher implements SymmetricCipher<Integer[]> {
         this.key = generateKey();
     }
 
-    // Not yet done.
     @Override
     public Integer[] generateKey() {
         Random generator = new Random();
@@ -16,17 +15,12 @@ public class SubstitutionCipher implements SymmetricCipher<Integer[]> {
         Integer[] reverseMap = new Integer[NUM_CHARS];
         initializeIntVector(reverseMap, -1);
         for (int i = 0; i < NUM_CHARS; i++) {
-            int counter = 0;
-            int to = generator.nextInt(NUM_CHARS - i);
-            for (Integer value : reverseMap) {
-                if (value != -1) {
-                    if (to < value) {
-                        counter++;
-                    }
-                }
+            int to = generator.nextInt(NUM_CHARS);
+            if (reverseMap[to] != -1) {
+                to = nearest(reverseMap, to);
             }
-            map[i] = to + counter;
-            reverseMap[to+counter] = i;
+            map[i] = to;
+            reverseMap[to] = i;
         }
         this.key = map;
         this.reverseMap = reverseMap;
@@ -46,7 +40,7 @@ public class SubstitutionCipher implements SymmetricCipher<Integer[]> {
     public String decrypt(int[] data) {
         String dataDecrypted = "";
         for (int i = 0; i < data.length; i++) {
-            dataDecrypted += (int) this.reverseMap[data[i]];
+            dataDecrypted += (char) ((int) this.reverseMap[data[i]]);
         }
         return dataDecrypted;
     }
@@ -55,6 +49,22 @@ public class SubstitutionCipher implements SymmetricCipher<Integer[]> {
         for (int i = 0; i < vector.length; i++) {
             vector[i] = value;
         }
+    }
+
+    public int nearest(Integer[] vector, int index) {
+        for (int i = 1; i <= vector.length; i++) {
+            if (index + i < vector.length) {
+                if (vector[index + i] == -1) {
+                    return index + i;
+                }
+            }
+            if (index - i >= 0) {
+                if (vector[index - i] == -1) {
+                    return index - i;
+                }
+            }
+        }
+        return -1;
     }
 
     public String toString(Integer[] vector) {
@@ -66,14 +76,42 @@ public class SubstitutionCipher implements SymmetricCipher<Integer[]> {
         return begin + mid + "]";
     }
 
+    public double randomness() {
+        int number = 1000;
+        ArrayList<Integer[]> keys = new ArrayList<Integer[]>();
+        for (int i = 0; i < number; i++) {
+            keys.add(generateKey());
+        }
+        Integer[] counter = new Integer[NUM_CHARS];
+        initializeIntVector(counter, 0);
+        for (int i = 0; i < NUM_CHARS; i++) {
+            for (int j = 0; j < number - 1; j++) {
+                for (int k = j + 1; k < number; k++) {
+                    if (keys.get(j)[i] == keys.get(k)[i]) {
+                        counter[i]++;
+                    }
+                }
+            }
+        }
+        double result = 0;
+        for (int i = 0; i < NUM_CHARS; i++) {
+            result += counter[i]*counter[i];
+        }
+        result /= NUM_CHARS;
+        result = Math.sqrt(result);
+        result = result / (number*number);
+        return result;
+    }
+
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         SubstitutionCipher substitutionCipher = new SubstitutionCipher();
-        System.out.println(substitutionCipher.toString(substitutionCipher.key));
-        System.out.println("\n\n"+substitutionCipher.toString(substitutionCipher.reverseMap));
-        //System.out.println("Type your message:");
-        //String message = input.next();
-        //int[] encryptedData = substitutionCipher.encrypt(message);
-        //System.out.println("This is your original message:\n" + substitutionCipher.decrypt(encryptedData));
+        System.out.println("Type your message:");
+        String message = input.nextLine();
+        int[] encryptedData = substitutionCipher.encrypt(message);
+        System.out.println("This is your original message:\n" + substitutionCipher.decrypt(encryptedData));
+
+        System.out.printf("%f%%", substitutionCipher.randomness()*100);
+        input.close();
     }
 }

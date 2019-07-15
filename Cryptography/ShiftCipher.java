@@ -26,7 +26,7 @@ public class ShiftCipher implements SymmetricCipher<Integer> {
     public String decrypt(int[] data) {
         String dataDecrypted = "";
         for (int i = 0; i < data.length; i++) {
-            dataDecrypted += (int) ((data[i] - this.key) % NUM_CHARS);
+            dataDecrypted += (char) ((data[i] - this.key) % NUM_CHARS);
         }
         return dataDecrypted;
     }
