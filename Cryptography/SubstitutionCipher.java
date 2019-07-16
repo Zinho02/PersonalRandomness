@@ -100,18 +100,6 @@ public class SubstitutionCipher implements SymmetricCipher<Integer[]> {
         result /= NUM_CHARS;
         result = Math.sqrt(result);
         result = result / (number*number);
-        return result;
-    }
-
-    public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        SubstitutionCipher substitutionCipher = new SubstitutionCipher();
-        System.out.println("Type your message:");
-        String message = input.nextLine();
-        int[] encryptedData = substitutionCipher.encrypt(message);
-        System.out.println("This is your original message:\n" + substitutionCipher.decrypt(encryptedData));
-
-        System.out.printf("%f%%", substitutionCipher.randomness()*100);
-        input.close();
+        return 1 - result;
     }
 }
