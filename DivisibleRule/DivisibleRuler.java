@@ -5,10 +5,14 @@ public class DivisibleRuler {
         ArrayList<Integer> remainders = new ArrayList<>();
         int baseTen = 1;
         int counter = 0;
+        boolean zero = false;
         String phrase = "The sum of\n";
         while (true) {
             int remainder = baseTen % n;
-            if (remainders.contains(remainder) || remainder == 0) {
+            if (remainders.contains(remainder)) {
+                break;
+            } else if (remainder == 0) {
+                zero = true;
                 break;
             }
             counter++;
@@ -16,7 +20,11 @@ public class DivisibleRuler {
             phrase += counter + " digit times " + remainder + "\n";
             baseTen *= 10;
         }
-        phrase += "and repeatedly until all the digits are covered must be divisible by " + n + ".";
+        if (!zero) {
+            phrase += "and repeatedly until all the digits are covered must be divisible by " + n + ".";
+            return phrase;
+        }
+        phrase += "must be divisible by" + n + ".";
         return phrase;
     }
 
